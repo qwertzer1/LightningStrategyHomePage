@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { Search, Settings, RefreshCw, Zap, ChevronDown, ChevronUp, Mail } from 'lucide-react';
+import { Search, Settings, RefreshCw, Zap, ChevronDown, ChevronUp, Mail, Menu, X } from 'lucide-react';
 
 function App() {
   const [hoveredSection, setHoveredSection] = useState<string | null>(null);
@@ -14,6 +14,7 @@ function App() {
   const [isMoving, setIsMoving] = useState(false);
   const moveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [expandedServices, setExpandedServices] = useState<Set<string>>(new Set());
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   
   const fullTitleText = 'AI-Powered Solutions';
   const fullSubtitleText = 'Grow your profits with AI automation';
@@ -155,6 +156,17 @@ function App() {
   // Check if a service is expanded
   const isServiceExpanded = (serviceId: string) => {
     return expandedServices.has(serviceId);
+  };
+
+  // Toggle mobile menu
+  const toggleMobileMenu = () => {
+    setMobileMenuOpen(!mobileMenuOpen);
+  };
+
+  // Close mobile menu when a link is clicked
+  const handleMobileNavClick = (sectionId: string) => {
+    scrollToSection(sectionId);
+    setMobileMenuOpen(false);
   };
 
   // Smooth scroll function
@@ -304,6 +316,19 @@ function App() {
     }
   }, [calendlyLoaded]);
 
+  // Add body class when mobile menu is open to prevent scrolling
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.classList.add('overflow-hidden');
+    } else {
+      document.body.classList.remove('overflow-hidden');
+    }
+
+    return () => {
+      document.body.classList.remove('overflow-hidden');
+    };
+  }, [mobileMenuOpen]);
+
   return (
     <div className="relative min-h-screen bg-black overflow-hidden">
       {/* Background with grid only */}
@@ -313,11 +338,13 @@ function App() {
       </div>
 
       {/* Navigation */}
-      <nav className="relative z-10 flex justify-between items-center p-6">
+      <nav className="relative z-50 flex justify-between items-center p-6">
         <div className="flex items-center">
           <Zap className="h-8 w-8 text-orange-500 mr-2" />
           <h1 className="text-2xl font-bold text-orange-500">LIGHTNING STRATEGY</h1>
         </div>
+        
+        {/* Desktop Navigation */}
         <div className="hidden md:flex space-x-8">
           {Object.entries(navSections).map(([name, sectionId]) => (
             <a 
@@ -333,12 +360,48 @@ function App() {
             </a>
           ))}
         </div>
-        <button className="md:hidden text-white">
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16m-7 6h7"></path>
-          </svg>
+        
+        {/* Mobile Menu Button */}
+        <button 
+          className="md:hidden text-white p-3 min-w-[44px] min-h-[44px] flex items-center justify-center z-50"
+          onClick={toggleMobileMenu}
+          aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
+        >
+          {mobileMenuOpen ? (
+            <X className="w-6 h-6" />
+          ) : (
+            <Menu className="w-6 h-6" />
+          )}
         </button>
       </nav>
+
+      {/* Mobile Navigation Menu */}
+      <div 
+        className={`fixed inset-0 bg-black z-40 md:hidden transition-all duration-300 ease-in-out ${
+          mobileMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+        }`}
+      >
+        <div className={`flex flex-col items-center justify-center h-full transition-transform duration-300 ease-in-out ${
+          mobileMenuOpen ? 'translate-y-0' : '-translate-y-10'
+        }`}>
+          {Object.entries(navSections).map(([name, sectionId], index) => (
+            <a 
+              key={name} 
+              href={`#${sectionId}`}
+              onClick={(e) => {
+                e.preventDefault();
+                handleMobileNavClick(sectionId);
+              }}
+              className={`text-2xl font-bold text-white hover:text-orange-500 transition-colors duration-300 py-4 my-2 min-h-[44px] min-w-[44px] flex items-center justify-center mobile-menu-link ${
+                mobileMenuOpen ? 'fade-in-up' : ''
+              }`}
+              style={{ animationDelay: `${index * 0.1}s` }}
+            >
+              {name}
+            </a>
+          ))}
+        </div>
+      </div>
 
       {/* Hero Section */}
       <header id="hero-section" className="relative z-10 text-center py-20 px-4">
@@ -352,7 +415,7 @@ function App() {
         </p>
         <button 
           onClick={() => scrollToSection('calendly-section')}
-          className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-8 rounded-full transition-all duration-300 transform hover:scale-105 hover:shadow-[0_0_15px_rgba(255,165,0,0.5)] button-spark"
+          className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-8 rounded-full transition-all duration-300 transform hover:scale-105 hover:shadow-[0_0_15px_rgba(255,165,0,0.5)] button-spark min-w-[44px] min-h-[44px]"
         >
           Get Started
         </button>
@@ -488,7 +551,7 @@ function App() {
                 
                 <button 
                   onClick={() => toggleService(id)}
-                  className="flex items-center justify-center w-full py-2 px-4 bg-orange-500/20 hover:bg-orange-500/30 text-orange-400 rounded-md transition-all duration-300 border border-orange-500/30"
+                  className="flex items-center justify-center w-full py-2 px-4 bg-orange-500/20 hover:bg-orange-500/30 text-orange-400 rounded-md transition-all duration-300 border border-orange-500/30 min-h-[44px]"
                 >
                   <span className="mr-2">{isServiceExpanded(id) ? 'Show Less' : 'Show More'}</span>
                   {isServiceExpanded(id) ? (
@@ -534,7 +597,7 @@ function App() {
             >
               <button
                 onClick={() => toggleFaq(index)}
-                className={`w-full flex justify-between items-center p-5 rounded-lg text-left transition-all duration-300 ${
+                className={`w-full flex justify-between items-center p-5 rounded-lg text-left transition-all duration-300 min-h-[44px] ${
                   isFaqExpanded(index) 
                     ? 'bg-gradient-to-r from-orange-900/50 to-orange-800/30 text-orange-400' 
                     : 'bg-black/50 text-orange-400 hover:bg-black/70'

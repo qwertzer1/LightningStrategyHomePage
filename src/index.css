@@ -382,7 +382,7 @@ html {
   left: 0;
   right: 0;
   height: 1px;
-  background: linear-gradient(to right, transparent, rgba(249, 115, 22, 0.3), transparent);
+  background: linear-gradient to right, transparent, rgba(249, 115, 22, 0.3), transparent);
 }
 
 #faq-section::after {
@@ -436,7 +436,7 @@ html {
 
 .faq-hovered button {
   border-color: rgba(249, 115, 22, 0.4);
-  box-shadow: 0 10px 15px - 3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
 
 /* Email link styles */
@@ -475,4 +475,88 @@ button:hover ~ .cursor-glow {
 /* Ensure Calendly iframe doesn't interfere with cursor */
 .calendly-inline-widget iframe {
   pointer-events: auto;
+}
+
+/* Mobile Menu Animation */
+.animate-fade-in {
+  animation: fadeIn 0.5s forwards;
+}
+
+/* Prevent scrolling when mobile menu is open */
+body.overflow-hidden {
+  overflow: hidden;
+}
+
+/* Mobile menu styles */
+@media (max-width: 768px) {
+  .mobile-menu-button {
+    min-width: 44px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .mobile-menu-link {
+    min-height: 44px;
+    min-width: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px;
+    position: relative;
+  }
+  
+  .mobile-menu-link::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background-color: #f97316;
+    transition: all 0.3s ease;
+    transform: translateX(-50%);
+  }
+  
+  .mobile-menu-link:hover::after {
+    width: 60%;
+  }
+  
+  /* Hide custom cursor on mobile */
+  body {
+    cursor: auto;
+  }
+  
+  .cursor-dot, 
+  .cursor-glow {
+    display: none;
+  }
+}
+
+/* Animation for mobile menu items */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in-up {
+  animation: fadeInUp 0.5s forwards;
+}
+
+/* Mobile menu container styling */
+@media (max-width: 768px) {
+  .mobile-menu-container {
+    background-color: rgba(0, 0, 0, 0.95);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-left: 1px solid rgba(249, 115, 22, 0.2);
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.8);
+  }
 }
