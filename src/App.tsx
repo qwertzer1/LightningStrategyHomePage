@@ -633,7 +633,7 @@ function App() {
         </p>
         
         <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-2xl overflow-hidden">
-          <div className="calendly-inline-widget" data-url="https://calendly.com/lightning-strategy/free-ai-automation-onboarding-call" style={{minWidth: '320px', height: '700px'}}></div>
+          <div className="calendly-inline-widget" data-url="https://calendly.com/lightning-strategy/free-ai-automation-discovery-call" style={{minWidth: '320px', height: '700px'}}></div>
         </div>
       </section>
 
